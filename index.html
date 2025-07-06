@@ -85,13 +85,47 @@
       font-size: 0.9em;
     }
   </style>
+  <!-- Web3Modal + WalletConnect Scripts -->
+<script src="https://unpkg.com/@walletconnect/web3-provider@1.8.0/dist/umd/index.min.js"></script>
+<script src="https://unpkg.com/web3@1.6.1/dist/web3.min.js"></script>
+<script src="https://unpkg.com/web3modal@1.9.12/dist/index.js"></script>
+<script type="module">
+  import { EthereumClient, w3mConnectors, w3mProvider } from "https://unpkg.com/@web3modal/ethereum@2.6.0";
+  import { Web3Modal } from "https://unpkg.com/@web3modal/html@2.6.0";
+  import { configureChains, createConfig, createWeb3Modal } from "https://unpkg.com/@wagmi/core@2.6.0";
+  import { mainnet, sepolia } from "https://unpkg.com/@wagmi/core/chains";
+
+  const projectId = "5f4ffa8b2dea604f51c52688be30b205"; // Replace with your Web3Modal Project ID
+
+  const chains = [mainnet, sepolia];
+  const { publicClient } = configureChains(chains, [w3mProvider({ projectId })]);
+
+  const wagmiConfig = createConfig({
+    autoConnect: true,
+    connectors: w3mConnectors({ projectId, version: 2, chains }),
+    publicClient
+  });
+
+  const ethereumClient = new EthereumClient(wagmiConfig, chains);
+
+  createWeb3Modal({
+    projectId,
+    themeMode: "dark",
+    themeColor: "gold",
+    wagmiConfig,
+    chains
+  });
+</script>
 </head>
 <body>
   <header>
     <div>
       <img src="Konia logo.png" alt="Konia Logo" style="height: 120px;width: 150px;">
       <h1>Konia</h1>
+    <button id="connectWallet" class="btn">🔌 Connect Wallet</button>
+    <p id="walletInfo"></p>
     </div>
+    <w3m-button></w3m-button>
     <nav>
       <a href="#about">About</a>
       <a href="#tokenomics">Tokenomics</a>
@@ -109,22 +143,22 @@
       <h2>About Konia</h2>
       <p><strong>Konia</strong> is a decentralized meme-powered token with a vibrant community and real use cases. Built on Ethereum, it rewards players via play-to-earn gaming and future DeFi utilities. It's more than a meme—it's a movement.</p>
     </section>
-    <section class="section" id="tokenaddress">
-  <h2>🪙 KON Token Contract</h2>
+   <section class="section" id="tokenaddress">
+  <h2>🪙 KON Token Contract (Testnet)</h2>
   <p><strong>Official Token Address:</strong></p>
   <p style="word-break: break-all; font-size: 1.1em; background: #222; padding: 10px; border-radius: 8px;">
-    0xYourTokenAddressHere1234567890abcdef
+    0xA420295ab37774D2e6e09478C506977B350E53A3
   </p>
-
-  <a class="btn" href="https://etherscan.io/token/0xYourTokenAddressHere1234567890abcdef" target="_blank">🔎 View on Etherscan</a>
+  <a class="btn" href="https://sepolia.etherscan.io/token/0xA420295ab37774D2e6e09478C506977B350E53A3" target="_blank">🔎 View on Etherscan</a>
   <button class="btn" onclick="addToMetaMask()">➕ Add to MetaMask</button>
 </section>
+
 <script>
   async function addToMetaMask() {
-    const tokenAddress = "0xYourTokenAddressHere1234567890abcdef";
+    const tokenAddress = "0xA420295ab37774D2e6e09478C506977B350E53A3";
     const tokenSymbol = "KON";
     const tokenDecimals = 18;
-    const tokenImage = "https://yourdomain.com/konia logo.png"; // Optional icon
+    const tokenImage = "https://yourdomain.com/konia-logo.png"; // Optional icon
 
     try {
       const wasAdded = await window.ethereum.request({
@@ -141,16 +175,17 @@
       });
 
       if (wasAdded) {
-        alert('KON Token added to MetaMask!');
+        alert('✅ KON Token added to MetaMask!');
       } else {
-        alert('KON Token not added.');
+        alert('❌ KON Token not added.');
       }
     } catch (error) {
       console.error(error);
-      alert('MetaMask is not available or user rejected the request.');
+      alert('MetaMask error or request rejected.');
     }
   }
 </script>
+
 
 
     <section class="section" id="tokenomics">
@@ -331,5 +366,48 @@
   <footer class="section">
     <p>© 2025 Konia Token | <a href="https://t.me/yourtelegram" class="footer-link">Telegram</a> | <a href="https://twitter.com/yourtwitter" class="footer-link">Twitter</a></p>
   </footer>
+  <!-- Everything above remains unchanged -->
+...
+  <footer class="section">
+    <p>© 2025 Konia Token | <a href="https://t.me/yourtelegram" class="footer-link">Telegram</a> | <a href="https://twitter.com/yourtwitter" class="footer-link">Twitter</a></p>
+  </footer>
+  <footer class="section">
+    <p>© 2025 Konia Token | <a href="https://t.me/yourtelegram" class="footer-link">Telegram</a> | <a href="https://twitter.com/yourtwitter" class="footer-link">Twitter</a></p>
+  </footer>
+
+  <script>
+  function connectKoniaWallet() {
+    if (typeof window.openWeb3Modal === 'function') {
+      window.openWeb3Modal();
+    } else {
+      alert('🔌 Wallet not ready yet. Please try again in 1–2 seconds.');
+    }
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const connectBtn = document.getElementById('connectWallet');
+    const walletInfo = document.getElementById('walletInfo');
+
+    connectBtn.addEventListener('click', connectKoniaWallet);
+
+    // Check wallet already connected
+    if (window.ethereum) {
+      window.ethereum.request({ method: 'eth_accounts' }).then(accounts => {
+        if (accounts.length > 0) {
+          walletInfo.textContent = `✅ Connected: ${accounts[0].slice(0, 6)}...${accounts[0].slice(-4)}`;
+        }
+      });
+
+      window.ethereum.on('accountsChanged', (accounts) => {
+        if (accounts.length > 0) {
+          walletInfo.textContent = `✅ Connected: ${accounts[0].slice(0, 6)}...${accounts[0].slice(-4)}`;
+        } else {
+          walletInfo.textContent = '';
+        }
+      });
+    }
+  });
+</script>
+
 </body>
 </html>
