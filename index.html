@@ -225,20 +225,21 @@
       <p><strong>Konia</strong> is a decentralized meme-powered token with a vibrant community and real use cases. Built on Ethereum, it rewards players via play-to-earn gaming and future DeFi utilities. It's more than a meme—it's a movement.</p>
     </section>
    <section class="section" id="tokenaddress">
-  <h2>🪙 KON Token Contract (Testnet)</h2>
+  <h2>🪙 KON Token Contract</h2>
   <p><strong>Official Token Address:</strong></p>
   <p style="word-break: break-all; font-size: 1.1em; background: #222; padding: 10px; border-radius: 8px;">
-    0xA420295ab37774D2e6e09478C506977B350E53A3
+    0x18dCDE37dfe6d37E3f517bDba3d14aE51d0E7689
   </p>
-  <a class="btn" href="https://sepolia.etherscan.io/token/0xA420295ab37774D2e6e09478C506977B350E53A3" target="_blank">🔎 View on Etherscan</a>
+  <a class="btn" href="https://etherscan.io/token/0x18dCDE37dfe6d37E3f517bDba3d14aE51d0E7689" target="_blank">🔎 View on Etherscan</a>
 </section>
 
 <script>
   async function addToMetaMask() {
-    const tokenAddress = "0xA420295ab37774D2e6e09478C506977B350E53A3";
+    const tokenAddress = "0x18dCDE37dfe6d37E3f517bDba3d14aE51d0E7689";
     const tokenSymbol = "KON";
     const tokenDecimals = 18;
-    const tokenImage = "https://yourdomain.com/konia-logo.png"; // Optional icon
+    const tokenImage ="c:\Users\ADAM MOSES\Downloads\konia_site\Konia-Logo.JPG";
+
 
     try {
       const wasAdded = await window.ethereum.request({
@@ -386,57 +387,63 @@
       <a href="Konia Whitepaper.pdf" target="_blank" class="btn">📄 Download Whitepaper</a>
     </section>
 
-    <section class="section" id="calculator" style="text-align: center;">
-  <h2>KON Token Calculator – 3× Gain Strategy</h2>
+      <!-- 🔁 Replace your <section id="calculator"> with this: -->
   <p style="max-width: 700px; margin: auto;">
-    Use this calculator to estimate your KON tokens during presale and your ETH value at launch based on our 3× listing profit plan.
+    Estimate how many KON you’ll receive based on the ETH amount and presale tier.
   </p>
 
   <div style="margin: 20px auto; max-width: 600px; padding: 20px; background: #1e1e1e; border-radius: 12px; box-shadow: 0 0 15px rgba(255,215,0,0.3);">
-    <label style="display:block; margin-bottom: 10px;">
-      <strong>Presale ETH Amount</strong><br>
-      <input type="number" id="ethInput" placeholder="e.g. 1 ETH" style="padding: 10px; width: 80%; margin-top: 5px; border-radius: 6px;">
+    <label><strong>Select Presale Tier</strong><br>
+      <select id="tierSelect" style="padding: 10px; width: 80%; margin-top: 10px; border-radius: 6px;">
+        <option value="500000000">Tier 1 – 1 ETH = 500M KON</option>
+        <option value="400000000">Tier 2 – 1 ETH = 400M KON</option>
+        <option value="300000000">Tier 3 – 1 ETH = 300M KON</option>
+      </select>
+    </label>
+
+    <label style="display:block; margin-top: 20px;">
+      <strong>Enter ETH Amount</strong><br>
+      <input type="number" id="ethInput" placeholder="e.g. 1" style="padding: 10px; width: 80%; margin-top: 10px; border-radius: 6px;">
     </label>
     <p><strong>KON You Will Receive:</strong> <span id="konOutput">0</span></p>
 
     <hr style="margin: 20px 0; border-color: #555;">
 
-    <label style="display:block; margin-bottom: 10px;">
-      <strong>KON Amount</strong><br>
-      <input type="number" id="konInput" placeholder="e.g. 1,000,000 KON" style="padding: 10px; width: 80%; margin-top: 5px; border-radius: 6px;">
+    <label style="display:block;">
+      <strong>Enter KON Amount</strong><br>
+      <input type="number" id="konInput" placeholder="e.g. 1,000,000 KON" style="padding: 10px; width: 80%; margin-top: 10px; border-radius: 6px;">
     </label>
     <p><strong>ETH Value at Launch:</strong> <span id="ethValueAtLaunch">0</span></p>
-    <p style="margin-top: 10px;"><strong>Expected Profit:</strong> 3×</p>
+    <p><strong>Expected Profit:</strong> 3×</p>
   </div>
 
   <script>
-    const presaleRate = 500000000; // KON per ETH
-    const listingRate = 166666666; // KON per ETH (for 3x gain)
+    const tierDropdown = document.getElementById('tierSelect');
+    const ethInput = document.getElementById('ethInput');
+    const konInput = document.getElementById('konInput');
+    const konOutput = document.getElementById('konOutput');
+    const ethValueAtLaunch = document.getElementById('ethValueAtLaunch');
 
-    document.getElementById('ethInput').addEventListener('input', function () {
-      const eth = parseFloat(this.value);
-      const konAmount = isNaN(eth) ? 0 : eth * presaleRate;
-      document.getElementById('konOutput').textContent = konAmount.toLocaleString();
-    });
+    const listingRate = 166666666;
 
-    document.getElementById('konInput').addEventListener('input', function () {
-      const kon = parseFloat(this.value);
-      const ethAtLaunch = isNaN(kon) ? 0 : kon / listingRate;
-      document.getElementById('ethValueAtLaunch').textContent = ethAtLaunch.toFixed(4);
-    });
+    function updateKON() {
+      const eth = parseFloat(ethInput.value);
+      const rate = parseInt(tierDropdown.value);
+      const kon = isNaN(eth) ? 0 : eth * rate;
+      konOutput.textContent = kon.toLocaleString();
+    }
+
+    function updateETH() {
+      const kon = parseFloat(konInput.value);
+      const ethLaunch = isNaN(kon) ? 0 : kon / listingRate;
+      ethValueAtLaunch.textContent = ethLaunch.toFixed(4);
+    }
+
+    tierDropdown.addEventListener('change', updateKON);
+    ethInput.addEventListener('input', updateKON);
+    konInput.addEventListener('input', updateETH);
   </script>
 </section>
-      <div class="conversion-info">
-  💱 <strong>Presale Tier 1 Rate:</strong> 1 ETH = 500,000,000 KON<br/>
-  💱 <strong>Presale Tier 2 Rate:</strong> 1 ETH = 400,000,000 KON<br/>
-  💱 <strong>Presale Tier 3 Rate:</strong> 1 ETH = 300,000,000 KON<br/>
-  🚀 <strong>Listing Rate:</strong> 1 ETH = 166,666,666 KON<br/>
-  📈 <strong>Launch Gain:</strong> 3× Value Boost for Presale Buyers<br/>
-  💡 Example: Buy 1 ETH = 500M KON → Worth 3 ETH at launch!
-</div>
-
-    </section>
-  </main>
 <script>
   function toggleMenu() {
     const nav = document.getElementById('mainNav');
@@ -444,7 +451,7 @@
   }
 </script>
   <footer class="section">
-    <p>© 2025 Konia Token | <a href="https://t.me/yourtelegram" class="footer-link">Telegram</a> | <a href="https://twitter.com/yourtwitter" class="footer-link">Twitter</a></p>
+    <p>© 2025 Konia Token | <a href="https://t.me/koniatoken" class="footer-link">Telegram</a> | <a href="https://x.com/Koniatoken20" class="footer-link">Twitter</a></p>
   </footer>
 </body>
 </html>
