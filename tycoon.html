@@ -5,207 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Konia Tycoon</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-        body 
-        {
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background: url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1740&q=80') no-repeat center center fixed;
-      background-size: cover;
-      color: #fff;
-      text-align: center;
-    }
-    .container {
-      background: rgba(0, 0, 0, 0.7);
-      padding: 20px;
-      border-radius: 20px;
-      margin: 40px auto;
-      width: 90%;
-      max-width: 600px;
-      box-shadow: 0 0 20px #000;
-      animation: fadeIn 1.5s ease-in-out;
-    }
-    button {
-      padding: 10px 20px;
-      margin: 10px;
-      border: none;
-      border-radius: 10px;
-      background: gold;
-      color: #000;
-      font-weight: bold;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.3s;
-    }
-    button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 10px gold;
-    }
-    .stats {
-      font-size: 1.2em;
-      animation: pulse 2s infinite;
-    }
-    #toggleAutoMining {
-      margin-top: 10px;
-      background-color: #e67e22;
-    }
-    #toggleAutoMining.on {
-      background-color: #2ecc71;
-      color: white;
-    }
-   #progressBarContainer {
-  width: 80%;
-  margin: 20px auto; /* centers horizontally */
-  background-color: rgba(255, 255, 255, 0.2);
-  border: 2px solid gold;
-  border-radius: 12px;
-  height: 25px;
-  overflow: hidden;
-  position: relative;
-  box-sizing: border-box;
-}
-
-#progressBar {
-  height: 100%;
-  width: 0%;
-  background: linear-gradient(to right, #2ecc71, #27ae60);
-  transition: width 0.5s ease-in-out;
-  text-align: center;
-  line-height: 25px;
-  font-weight: bold;
-  color: #000;
-   transition: width 0.5s ease-in-out;
-}
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes pulse {
-      0% { color: gold; }
-      50% { color: #fff; }
-      100% { color: gold; }
-    }
-    .hero-intro {
-  margin-top: 20px;
-  padding: 15px;
-  background: rgba(0, 0, 0, 0.6);
-  border: 2px solid gold;
-  border-radius: 15px;
-  max-width: 700px;
-  margin-left: auto;
-  margin-right: auto;
-  text-shadow: 0 0 5px #000;
-  animation: fadeIn 1.5s ease-in-out;
-}
-
-.hero-intro h2 {
-  color: #ffd700;
-  font-size: 1.6em;
-  margin-bottom: 10px;
-}
-
-.hero-intro p {
-  color: #eee;
-  font-size: 1.1em;
-}
-
-    .game-header {
-  background: transparent;
-  padding: 30px 10px;
-  text-align: center;
-  box-shadow: 0 0 20px rgba(255, 215, 0, 0.6), 0 0 40px rgba(255, 215, 0, 0.3);
-  animation: fadeIn 1s ease-in-out;
-  z-index: 1;
-  position: relative;
-}
-.game-logo-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  background: transparent;
-  padding: 10px 20px;
-  border-radius: 16px;
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.game-logo {
-  height: 80px;
-  width: auto;
-  margin-right: 15px;
-  border-radius: 10px;
-  box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
-}
-
-.game-logo-text h1 {
-  margin: 0;
-  font-size: 2.2em;
-  color: #ffd700;
-  text-shadow: 0 0 10px #ffd700, 0 0 20px #ffcc00;
-}
-
-.game-logo-text p {
-  margin: 5px 0 0;
-  font-size: 1.1em;
-  color: #fff8dc;
-  text-shadow: 0 0 5px rgba(255, 215, 0, 0.6);
-}
-
-/* Responsive adjustments */
-@media screen and (max-width: 768px) {
-  .game-logo-wrapper {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .game-logo {
-    margin: 0 0 10px 0;
-  }
-
-  .game-logo-text h1 {
-    font-size: 1.6em;
-  }
-
-  .game-logo-text p {
-    font-size: 0.95em;
-  }
-}
-button:disabled {
-  background-color: #999 !important;
-  color: #666 !important;
-  cursor: not-allowed;
-  box-shadow: none !important;
-  transform: none !important;
-}
-#nextResetTimerWrapper {
-  margin-top: 20px;
-  padding: 10px 20px;
-  background: rgba(255, 215, 0, 0.1);
-  border: 2px solid gold;
-  border-radius: 12px;
-  display: inline-block;
-  animation: glow 2s infinite ease-in-out;
-}
-
-#nextResetTimer {
-  font-size: 1.2em;
-  color: #ffd700;
-  font-weight: bold;
-  text-shadow: 0 0 5px #ffdf00, 0 0 10px #ffdf00;
-}
-
-@keyframes glow {
-  0% {
-    box-shadow: 0 0 5px gold;
-  }
-  50% {
-    box-shadow: 0 0 15px gold;
-  }
-  100% {
-    box-shadow: 0 0 5px gold;
-  }
-}
-  </style>
+  <link rel="stylesheet" href="tycoon-style.css" />
 </head>
 <body>
   <script>
@@ -238,32 +38,44 @@ button:disabled {
       <div id="nextResetTimerWrapper">
   <p id="nextResetTimer">⏳ Next reset in: --:--:--</p>
 </div>
-    <p>Remaining KON Reward Pool: <span id="rewardPoolDisplay"></span></p>
+    <div class="reward-box">
+  <div class="reward-left">
+    <span class="reward-icon">🪙</span>
+    <span class="reward-title">Reward Pool</span>
+  </div>
+  <div class="reward-right">
+    <span class="reward-value" id="rewardPoolDisplay">Loading...</span>
+    <span class="reward-unit">KON Left</span>
+  </div>
+</div>
         </div><div id="progressBarContainer" title="0 / 5 KON Mined Today">
   <div id="progressBar"></div>
 </div>
     <p id="countdownText"></p>
     <p id="limitWarning" style="color: red; font-weight: bold;"></p>
-    <div>
-      <p><strong>Top Miners (Today)</strong></p>
+    <div class="top-miner-box">
+  <div class="top-miner-icon">🏆</div>
+  <div id="topMiner" class="top-miner-name">Top Miner: --</div>
+</div>
       <ul id="leaderboard" style="list-style: none; padding: 0;"></ul>
+      <p id="topMiner">🏆 Top Miner Today: --</p>
     </div>
-    <div>
-      <label for="username">Set Display Name:</label>
-      <input id="username" placeholder="Your name" />
-      <button onclick="setUsername()">Save</button>
-    </div>
-    <button onclick="mineKon()">Mine KON</button>
-    <button onclick="buyUpgrade()">Buy Upgrade (10 KON)</button>
-   <button onclick="claimKonToWallet()">Claim to Wallet</button>
+   <div class="miner-name-box">
+  <label for="username" class="miner-label">🔖 Set Miner Name</label>
+  <input id="username" placeholder="Enter your miner name" class="miner-input" />
+  <button onclick="setUsername()" class="save-btn">💾 Save</button>
+</div>
+    <button onclick="mineKon()" class="mine-btn">⛏️ Mine KON</button>
+    <button onclick="buyUpgrade()" class="upgrade-btn">🛠 Buy Upgrade (10 KON)</button>
+   <button onclick="claimKonToWallet()" class="advanced-btn">🚀 Claim to Wallet</button>
     <br>
-    <button onclick="connectWallet()">Connect Wallet</button>
+    <button onclick="connectWallet()" class="connect-btn">🔗 Connect Wallet</button>
     <hr>
     <p><strong>Subscription System</strong></p>
-    <button onclick="subscribeWithETH()">Subscribe with ETH</button>
-    <button onclick="subscribeWithKON()">Subscribe with KON</button>
+    <button onclick="subscribeWithETH()" class="subscribe-btn eth-btn">💰 Subscribe with ETH</button>
+    <button onclick="subscribeWithKON()" class="subscribe-btn kon-btn">🪙 Subscribe with KON</button>
     <p id="subscriptionStatus">Checking subscription status...</p>
-    <button id="toggleAutoMining" onclick="toggleAutoMining()">Enable Auto-Mining</button>
+   <button id="toggleAutoMining" class="auto-btn" onclick="toggleAutoMining()">⚙️ Enable Auto-Mining</button>
   </div>
 
  <script>
@@ -365,19 +177,36 @@ function updateProgressBar() {
   minedToday = parseFloat(minedToday.toFixed(4));
   updateProgressBar(); // update progress visually
 
+// Deduct from the total KON reward pool
+totalKonPool = parseFloat(localStorage.getItem("totalKonPool")) || 100000000.0;
+totalKonPool -= konPerClick;
+localStorage.setItem("totalKonPool", totalKonPool);
+document.getElementById("rewardPoolDisplay").textContent = totalKonPool.toFixed(2);
+
+    // 🔝 Update daily leaderboard
+    let username = localStorage.getItem('username') || 'Guest';
+  let leaderboard = JSON.parse(localStorage.getItem('dailyLeaderboard')) || {};
+
+  if (!leaderboard[today]) leaderboard[today] = {};
+  leaderboard[today][username] = (leaderboard[today][username] || 0) + 0.1;
+
+  localStorage.setItem('dailyLeaderboard', JSON.stringify(leaderboard));
+
+
   localStorage.setItem("konCount", konCount);
   localStorage.setItem("minedToday", minedToday);
   localStorage.setItem("lastMineTime", now);
   document.getElementById("konCount").textContent = konCount.toFixed(2);
   document.getElementById("limitWarning").textContent = "";
-  let totalKonPool = parseFloat(localStorage.getItem("totalKonPool")) || 1000.0; // Set your desired pool cap
+  totalKonPool = parseFloat(localStorage.getItem("totalKonPool")) || 100000000.0; // Set your desired pool cap
   // 🔒 Disable the button immediately after mining
   document.querySelector('button[onclick="mineKon()"]').disabled = true;
-
+updateLeaderboard();
   startCountdownAfterMine();
 }
 
 function updateResetCountdown() {
+  console.log("⏳ Countdown running...");
   const now = Date.now();
   const lastReset = parseInt(localStorage.getItem("lastMineTime")) || 0;
   const nextReset = lastReset + 30 * 60 * 1000;
@@ -390,10 +219,7 @@ if (diff <= 0) {
   mineButton.disabled = false;
   clearInterval(countdownInterval);
 } else {
-  const minutes = Math.floor(diff / 60000);
-  const seconds = Math.floor((diff % 60000) / 1000);
-  document.getElementById("nextResetTimer").textContent = `⏳ Next mine in: ${minutes}m ${seconds}s`;
-
+ 
   // 🔒 Disable button while countdown is active
   mineButton.disabled = true;
 }
@@ -407,12 +233,56 @@ if (diff <= 0) {
     clearInterval(countdownInterval);
     updateResetCountdown();
     countdownInterval = setInterval(updateResetCountdown, 1000);
+    displayTopMiner();
   }
 
   // Show current count on load
   document.getElementById("konCount").textContent = konCount.toFixed(2);
   startCountdownAfterMine();
    updateProgressBar(); // Show correct progress on load
+
+   // ✅ Place this at the top level (not nested inside any other function)
+  function updateLeaderboard() {
+    const leaderboardElement = document.getElementById("leaderboard");
+    leaderboardElement.innerHTML = ""; // Clear current list
+
+    const leaderboard = JSON.parse(localStorage.getItem("dailyLeaderboard")) || {};
+    const today = new Date().toDateString();
+    const todayData = leaderboard[today] || {};
+
+    const sorted = Object.entries(todayData).sort((a, b) => b[1] - a[1]);
+
+    for (const [username, score] of sorted) {
+      const li = document.createElement("li");
+      li.textContent = `${username}: ${score.toFixed(2)} KON`;
+      leaderboardElement.appendChild(li);
+    }
+  }
+
+   function displayTopMiner() {
+      const leaderboard = JSON.parse(localStorage.getItem("dailyLeaderboard")) || {};
+  const today = new Date().toDateString();
+  const todayData = leaderboard[today] || {};
+
+  let topMiner = "";
+  let topScore = 0;
+
+  for (let miner in todayData) {
+    if (todayData[miner] > topScore) {
+      topMiner = miner;
+      topScore = todayData[miner];
+    }
+  }
+
+  document.getElementById("topMiner").textContent = topMiner 
+    ? `🏆 Top Miner Today: ${topMiner} (${topScore.toFixed(2)} KON)`
+    : "No mining yet today.";
+}
+updateLeaderboard(); // Show leaderboard on page load
+// Show the remaining KON reward pool on load
+let totalKonPool = parseFloat(localStorage.getItem("totalKonPool")) || 100000000.0;
+document.getElementById("rewardPoolDisplay").textContent = totalKonPool.toFixed(2);
+startCountdownAfterMine();
 </script>
   <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.min.js"></script>
 </body>
