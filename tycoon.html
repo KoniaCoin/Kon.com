@@ -58,8 +58,8 @@
   <div id="topMiner" class="top-miner-name">Top Miner: --</div>
 </div>
       <ul id="leaderboard" style="list-style: none; padding: 0;"></ul>
-      <p id="topMiner">🏆 Top Miner Today: --</p>
-    </div>
+     <div id="topMinerCard" class="top-miner-box">
+  </div>
    <div class="miner-name-box">
   <label for="username" class="miner-label">🔖 Set Miner Name</label>
   <input id="username" placeholder="Enter your miner name" class="miner-input" />
@@ -260,7 +260,7 @@ if (diff <= 0) {
   }
 
    function displayTopMiner() {
-      const leaderboard = JSON.parse(localStorage.getItem("dailyLeaderboard")) || {};
+  const leaderboard = JSON.parse(localStorage.getItem("dailyLeaderboard")) || {};
   const today = new Date().toDateString();
   const todayData = leaderboard[today] || {};
 
@@ -274,10 +274,10 @@ if (diff <= 0) {
     }
   }
 
-  document.getElementById("topMiner").textContent = topMiner 
-    ? `🏆 Top Miner Today: ${topMiner} (${topScore.toFixed(2)} KON)`
-    : "No mining yet today.";
-}
+  document.getElementById("topMiner").innerHTML = topMiner
+  ? `🏆 Top Miner Today:<br><strong>Kon Miner</strong> (${topScore.toFixed(2)} KON)`
+  : "No mining yet today.";
+   }
 updateLeaderboard(); // Show leaderboard on page load
 // Show the remaining KON reward pool on load
 let totalKonPool = parseFloat(localStorage.getItem("totalKonPool")) || 100000000.0;

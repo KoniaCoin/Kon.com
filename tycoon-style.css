@@ -566,3 +566,71 @@ button:disabled {
   font-weight: 600;
   color: #f1c40f;
 }
+.top-miner-box {
+  background: rgba(0, 0, 0, 0.7);
+  border: 2px solid gold;
+  border-radius: 12px;
+  padding: 12px 18px;
+  margin: 15px auto;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 0 15px gold;
+}
+
+.top-miner-text {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #ffdd57;
+  text-shadow: 1px 1px 2px #000;
+}
+/* Adjust container size */
+.container {
+  max-width: 500px;
+  padding: 15px;
+  margin: 20px auto;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 15px;
+  box-shadow: 0 0 10px #000;
+}
+
+/* Adjust text and button sizes for smaller screens */
+@media screen and (max-width: 600px) {
+  body {
+    font-size: 14px;
+  }
+
+  h1 {
+    font-size: 22px;
+  }
+
+  .game-logo-text p,
+  .hero-intro p,
+  .stats,
+  .miner-label,
+  .save-btn,
+  .mine-btn,
+  .upgrade-btn,
+  .advanced-btn,
+  .connect-btn,
+  .subscribe-btn,
+  .auto-btn {
+    font-size: 13px;
+  }
+
+  #progressBarContainer {
+    height: 20px;
+  }
+
+  #progressBar {
+    font-size: 12px;
+  }
+
+  .miner-input {
+    font-size: 13px;
+  }
+
+  .game-logo-wrapper img {
+    width: 90px;
+    height: 70px;
+  }
+}
