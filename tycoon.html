@@ -52,20 +52,29 @@
       background-color: #2ecc71;
       color: white;
     }
-    #progressBarContainer {
-      background: #444;
-      border-radius: 10px;
-      overflow: hidden;
-      margin: 10px auto;
-      width: 80%;
-      height: 20px;
-    }
-    #progressBar {
-      height: 100%;
-      background: linear-gradient(to right, gold, orange);
-      width: 0%;
-      transition: width 0.5s ease-in-out;
-    }
+   #progressBarContainer {
+  width: 80%;
+  margin: 20px auto; /* centers horizontally */
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 2px solid gold;
+  border-radius: 12px;
+  height: 25px;
+  overflow: hidden;
+  position: relative;
+  box-sizing: border-box;
+}
+
+#progressBar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(to right, #2ecc71, #27ae60);
+  transition: width 0.5s ease-in-out;
+  text-align: center;
+  line-height: 25px;
+  font-weight: bold;
+  color: #000;
+   transition: width 0.5s ease-in-out;
+}
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(-20px); }
       to { opacity: 1; transform: translateY(0); }
@@ -226,14 +235,13 @@ button:disabled {
   <p>Click to mine, upgrade your speed, and claim real tokens to your wallet.</p>
 </div>
     <p class="stats">KON Mined: <span id="konCount">0</span></p>
-    <p>KON Earned/sec: <span id="konPerSec">0</span></p>
-   <div id="nextResetTimerWrapper">
+      <div id="nextResetTimerWrapper">
   <p id="nextResetTimer">⏳ Next reset in: --:--:--</p>
 </div>
     <p>Remaining KON Reward Pool: <span id="rewardPoolDisplay"></span></p>
-    <div id="progressBarContainer">
-      <div id="progressBar"></div>
-    </div>
+        </div><div id="progressBarContainer" title="0 / 5 KON Mined Today">
+  <div id="progressBar"></div>
+</div>
     <p id="countdownText"></p>
     <p id="limitWarning" style="color: red; font-weight: bold;"></p>
     <div>
@@ -299,65 +307,101 @@ async function claimKonToWallet() {
     alert("❌ Claim failed. Make sure the contract has enough KON.");
   }
 }
+function updateProgressBar() {
+  const konMined = parseFloat(localStorage.getItem("minedToday")) || 0;
+  const dailyLimit = 5.0;
+  const percent = Math.min((konMined / dailyLimit) * 100, 100);
+
+  const progressBar = document.getElementById("progressBar");
+  const container = document.getElementById("progressBarContainer");
+
+  progressBar.style.width = `${percent}%`;
+  progressBar.textContent = `${Math.floor(percent)}%`;
+  container.title = `${konMined.toFixed(2)} / ${dailyLimit} KON Mined Today`;
+
+  if (percent < 33) {
+    progressBar.style.background = "linear-gradient(to right, #2ecc71, #27ae60)";
+  } else if (percent < 66) {
+    progressBar.style.background = "linear-gradient(to right, #f1c40f, #f39c12)";
+  } else {
+    progressBar.style.background = "linear-gradient(to right, #e74c3c, #c0392b)";
+  }
+}
   function mineKon() {
-    const now = Date.now();
-    const today = new Date().toDateString();
+  const now = Date.now();
+  const today = new Date().toDateString();
 
-    if (lastMineDay !== today) {
-      minedToday = 0;
-      lastMineDay = today;
-      localStorage.setItem("lastMineDay", today);
-      document.querySelector('button[onclick="mineKon()"]').disabled = false;
-      document.getElementById("limitWarning").textContent = "";
-    }
 
-    const konPerClick = 0.1;
-    const dailyLimit = 5.0;
-    const cooldownPeriod = 30 * 60 * 1000;
-    const lastMineTime = parseInt(localStorage.getItem("lastMineTime")) || 0;
-
-    if (now - lastMineTime < cooldownPeriod) {
-      const waitTime = cooldownPeriod - (now - lastMineTime);
-      const minutesLeft = Math.ceil(waitTime / (60 * 1000));
-      document.getElementById("limitWarning").textContent = `⏳ Wait ${minutesLeft} min(s) before mining again.`;
-      return;
-    }
-
-    if (minedToday + konPerClick > dailyLimit) {
-      document.getElementById("limitWarning").textContent = "🚫 You've reached your daily mining limit.";
-      document.querySelector('button[onclick="mineKon()"]').disabled = true;
-      return;
-    }
-
-    konCount += konPerClick;
-    minedToday += konPerClick;
-    konCount = parseFloat(konCount.toFixed(4));
-    minedToday = parseFloat(minedToday.toFixed(4));
-
-    localStorage.setItem("konCount", konCount);
-    localStorage.setItem("minedToday", minedToday);
-    localStorage.setItem("lastMineTime", now);
-    document.getElementById("konCount").textContent = konCount.toFixed(2);
+  if (lastMineDay !== today) {
+    minedToday = 0;
+    lastMineDay = today;
+    localStorage.setItem("lastMineDay", today);
+    document.querySelector('button[onclick="mineKon()"]').disabled = false;
     document.getElementById("limitWarning").textContent = "";
-    startCountdownAfterMine();
   }
 
-  function updateResetCountdown() {
-    const now = Date.now();
-    const lastReset = parseInt(localStorage.getItem("lastMineTime")) || 0;
-    const nextReset = lastReset + 30 * 60 * 1000;
-    const diff = nextReset - now;
+  const konPerClick = 0.1;
+  const dailyLimit = 5.0;
+  const cooldownPeriod = 30 * 60 * 1000; // 30 minutes
+  const lastMineTime = parseInt(localStorage.getItem("lastMineTime")) || 0;
 
-    if (diff <= 0) {
-      document.getElementById("nextResetTimer").textContent = "⏳ Ready to mine!";
-      clearInterval(countdownInterval);
-      return;
-    }
-
-    const minutes = Math.floor(diff / 60000);
-    const seconds = Math.floor((diff % 60000) / 1000);
-    document.getElementById("nextResetTimer").textContent = `⏳ Next mine in: ${minutes}m ${seconds}s`;
+  if (now - lastMineTime < cooldownPeriod) {
+    const waitTime = cooldownPeriod - (now - lastMineTime);
+    const minutesLeft = Math.ceil(waitTime / (60 * 1000));
+    document.getElementById("limitWarning").textContent = `⏳ Wait ${minutesLeft} min(s) before mining again.`;
+    return;
   }
+
+  if (minedToday + konPerClick > dailyLimit) {
+    document.getElementById("limitWarning").textContent = "🚫 You've reached your daily mining limit.";
+    document.querySelector('button[onclick="mineKon()"]').disabled = true;
+    return;
+  }
+
+
+  konCount += konPerClick;
+  minedToday += konPerClick;
+  konCount = parseFloat(konCount.toFixed(4));
+  minedToday = parseFloat(minedToday.toFixed(4));
+  updateProgressBar(); // update progress visually
+
+  localStorage.setItem("konCount", konCount);
+  localStorage.setItem("minedToday", minedToday);
+  localStorage.setItem("lastMineTime", now);
+  document.getElementById("konCount").textContent = konCount.toFixed(2);
+  document.getElementById("limitWarning").textContent = "";
+  let totalKonPool = parseFloat(localStorage.getItem("totalKonPool")) || 1000.0; // Set your desired pool cap
+  // 🔒 Disable the button immediately after mining
+  document.querySelector('button[onclick="mineKon()"]').disabled = true;
+
+  startCountdownAfterMine();
+}
+
+function updateResetCountdown() {
+  const now = Date.now();
+  const lastReset = parseInt(localStorage.getItem("lastMineTime")) || 0;
+  const nextReset = lastReset + 30 * 60 * 1000;
+  const diff = nextReset - now;
+
+  const mineButton = document.querySelector('button[onclick="mineKon()"]');
+
+if (diff <= 0) {
+  document.getElementById("nextResetTimer").textContent = "⏳ Ready to mine!";
+  mineButton.disabled = false;
+  clearInterval(countdownInterval);
+} else {
+  const minutes = Math.floor(diff / 60000);
+  const seconds = Math.floor((diff % 60000) / 1000);
+  document.getElementById("nextResetTimer").textContent = `⏳ Next mine in: ${minutes}m ${seconds}s`;
+
+  // 🔒 Disable button while countdown is active
+  mineButton.disabled = true;
+}
+
+  const minutes = Math.floor(diff / 60000);
+  const seconds = Math.floor((diff % 60000) / 1000);
+  document.getElementById("nextResetTimer").textContent = `⏳ Next mine in: ${minutes}m ${seconds}s`;
+}
 
   function startCountdownAfterMine() {
     clearInterval(countdownInterval);
@@ -368,7 +412,7 @@ async function claimKonToWallet() {
   // Show current count on load
   document.getElementById("konCount").textContent = konCount.toFixed(2);
   startCountdownAfterMine();
-  document.getElementById("konCount").textContent = konCount.toFixed(2);
+   updateProgressBar(); // Show correct progress on load
 </script>
   <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.min.js"></script>
 </body>
