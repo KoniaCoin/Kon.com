@@ -57,19 +57,22 @@
   <div class="top-miner-icon">🏆</div>
   <div id="topMiner" class="top-miner-name">Top Miner: --</div>
 </div>
-      <ul id="leaderboard" style="list-style: none; padding: 0;"></ul>
-     <div id="topMinerCard" class="top-miner-box">
-  </div>
-   <div class="miner-name-box">
+<ul id="leaderboard" style="list-style: none; padding: 0;"></ul>
+<!-- removed the empty div here -->
+<div class="miner-name-box">
   <label for="username" class="miner-label">🔖 Set Miner Name</label>
   <input id="username" placeholder="Enter your miner name" class="miner-input" />
   <button onclick="setUsername()" class="save-btn">💾 Save</button>
+  <p style="font-size: 0.9em; color: #ccc; margin-top: 5px;">
+    💡 If you don’t set a name, you’ll appear as <strong>👤 Anonymous Miner</strong>.
+  </p>
 </div>
     <button onclick="mineKon()" class="mine-btn">⛏️ Mine KON</button>
     <button onclick="buyUpgrade()" class="upgrade-btn">🛠 Buy Upgrade (10 KON)</button>
    <button onclick="claimKonToWallet()" class="advanced-btn">🚀 Claim to Wallet</button>
     <br>
     <button onclick="connectWallet()" class="connect-btn">🔗 Connect Wallet</button>
+    <p id="walletDisplay" style="font-size: 0.9em; color: #ccc;"></p>
     <hr>
     <p><strong>Subscription System</strong></p>
     <button onclick="subscribeWithETH()" class="subscribe-btn eth-btn">💰 Subscribe with ETH</button>
@@ -79,6 +82,7 @@
   </div>
 
  <script>
+  let userAccount = null;
   // ⬇️ Paste the full JavaScript code here (starting from `let konCount = ...`)
   // Example:
   let konCount = parseFloat(localStorage.getItem('konCount')) || 0;
@@ -86,7 +90,34 @@
   let lastMineDay = localStorage.getItem('lastMineDay') || new Date().toDateString();
   let countdownInterval = null;
 
+async function connectWallet() {
+  const button = document.querySelector('button[onclick="connectWallet()"]');
+
+  if (userAccount) {
+    // If already connected, disconnect
+    userAccount = null;
+    button.textContent = "🔗 Connect Wallet";
+    alert("🔌 Wallet disconnected.");
+    return;
+  }
+
+  if (window.ethereum) {
+    try {
+      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+      userAccount = accounts[0];
+      alert("✅ Wallet connected: " + userAccount);
+      button.textContent = `🔌 Disconnect (${userAccount.slice(0, 6)}...${userAccount.slice(-4)})`;
+    } catch (err) {
+      console.error("User rejected connection", err);
+      alert("❌ Wallet connection failed.");
+    }
+  } else {
+    alert("⚠️ MetaMask not detected. Please install MetaMask.");
+  }
+}
+
 async function claimKonToWallet() {
+  console.log("Claim to Wallet button clicked");
   if (!userAccount) {
     alert("⚠️ Please connect your wallet first.");
     return;
@@ -101,7 +132,7 @@ async function claimKonToWallet() {
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const signer = provider.getSigner();
   const kon = new ethers.Contract(
-    "0x1969eA6A256636C949BeeeBbC15745Dd5Bf5BEDe", // Testnet KONIA
+    "0xA420295ab37774D2e6e09478C506977B350E53A3", // ✅ Your testnet contract
     ["function transfer(address to, uint256 amount) public returns (bool)"],
     signer
   );
@@ -116,9 +147,10 @@ async function claimKonToWallet() {
     document.getElementById("konCount").textContent = "0";
   } catch (err) {
     console.error(err);
-    alert("❌ Claim failed. Make sure the contract has enough KON.");
+    alert("❌ Claim failed. Make sure the contract has enough KON and your wallet is connected to the right testnet.");
   }
 }
+
 function updateProgressBar() {
   const konMined = parseFloat(localStorage.getItem("minedToday")) || 0;
   const dailyLimit = 5.0;
@@ -184,7 +216,7 @@ localStorage.setItem("totalKonPool", totalKonPool);
 document.getElementById("rewardPoolDisplay").textContent = totalKonPool.toFixed(2);
 
     // 🔝 Update daily leaderboard
-    let username = localStorage.getItem('username') || 'Guest';
+   let username = localStorage.getItem('username') || '👤 Anonymous Miner';
   let leaderboard = JSON.parse(localStorage.getItem('dailyLeaderboard')) || {};
 
   if (!leaderboard[today]) leaderboard[today] = {};
@@ -252,11 +284,12 @@ if (diff <= 0) {
 
     const sorted = Object.entries(todayData).sort((a, b) => b[1] - a[1]);
 
-    for (const [username, score] of sorted) {
-      const li = document.createElement("li");
-      li.textContent = `${username}: ${score.toFixed(2)} KON`;
-      leaderboardElement.appendChild(li);
-    }
+    for (const [usernameRaw, score] of sorted) {
+  const username = usernameRaw === "Guest" ? "👤 Anonymous Miner" : usernameRaw;
+  const li = document.createElement("li");
+  li.textContent = `${username}: ${score.toFixed(2)} KON`;
+  leaderboardElement.appendChild(li);
+}
   }
 
    function displayTopMiner() {
@@ -287,3 +320,25 @@ startCountdownAfterMine();
   <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.min.js"></script>
 </body>
 </html>
+<footer class="section">
+  <p>© 2025 Konia Token</p>
+
+  <div style="text-align: center; margin-top: 20px;">
+    <a href="https://t.me/koniatoken" target="_blank" style="margin-right: 15px;">
+      <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" alt="Telegram" width="30" height="30">
+    </a>
+    <a href="https://x.com/Koniatoken20" target="_blank" style="margin-right: 15px;">
+      <img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" alt="Twitter" width="30" height="30">
+    </a>
+    <a href="https://web.facebook.com/profile.php?id=61578531593734" target="_blank" style="margin-right: 15px;">
+      <img src="https://cdn-icons-png.flaticon.com/512/124/124010.png" alt="Facebook" width="30" height="30">
+    </a>
+    <a href="https://www.instagram.com/konia_token/#" target="_blank">
+      <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" alt="Instagram" width="30" height="30">
+    </a>
+  </div>
+
+  <p class="footer-text">
+    Follow us on social media for updates and announcements!
+  </p>
+</footer>
