@@ -6,6 +6,10 @@
   <title>Konia Tycoon</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="tycoon-style.css" />
+  <!-- Web3Modal and WalletConnect CDN -->
+<script src="https://unpkg.com/web3modal@1.9.8/dist/index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.min.js"></script>
+<script src="https://unpkg.com/@walletconnect/web3-provider@1.8.0/dist/umd/index.min.js"></script>
 </head>
 <body>
     <audio id="bgMusic" autoplay loop>
@@ -76,38 +80,51 @@
 
  <script>
   let userAccount = null;
-  // ⬇️ Paste the full JavaScript code here (starting from `let konCount = ...`)
+   // ⬇️ Paste the full JavaScript code here (starting from `let konCount = ...`)
   // Example:
   let konCount = parseFloat(localStorage.getItem('konCount')) || 0;
   let minedToday = parseFloat(localStorage.getItem('minedToday')) || 0;
   let lastMineDay = localStorage.getItem('lastMineDay') || new Date().toDateString();
   let countdownInterval = null;
+  
+  let provider, web3Modal, signer, konContract;
 
-async function connectWallet() {
-  const button = document.querySelector('button[onclick="connectWallet()"]');
-
-  if (userAccount) {
-    // If already connected, disconnect
-    userAccount = null;
-    button.textContent = "🔗 Connect Wallet";
-    alert("🔌 Wallet disconnected.");
-    return;
+  async function initWalletModal() {
+    web3Modal = new window.Web3Modal.default({
+      cacheProvider: false,
+      providerOptions: {
+        walletconnect: {
+          package: window.WalletConnectProvider.default,
+          options: {
+            rpc: {
+              rpc: {
+                     11155111: "https://eth-sepolia.g.alchemy.com/v2/YHDt7GQKHiM6wcMUcCujYpZZXzaHZgUV"
+}
+            },
+          },
+        },
+      },
+    });
   }
 
-  if (window.ethereum) {
+  async function connectWallet() {
     try {
-      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-      userAccount = accounts[0];
-      alert("✅ Wallet connected: " + userAccount);
-      button.textContent = `🔌 Disconnect (${userAccount.slice(0, 6)}...${userAccount.slice(-4)})`;
-    } catch (err) {
-      console.error("User rejected connection", err);
+      const instance = await web3Modal.connect();
+      provider = new ethers.providers.Web3Provider(instance);
+      signer = provider.getSigner();
+      userAccount = await signer.getAddress();
+
+      document.querySelector('.connect-btn').textContent = `🔌 ${userAccount.slice(0, 6)}...${userAccount.slice(-4)}`;
+      alert("✅ Wallet connected!");
+    } catch (error) {
+      console.error("Connection error:", error);
       alert("❌ Wallet connection failed.");
     }
-  } else {
-    alert("⚠️ MetaMask not detected. Please install MetaMask.");
   }
-}
+
+  window.addEventListener('load', () => {
+    initWalletModal();
+  });
 
 async function claimKonToWallet() {
   console.log("Claim to Wallet button clicked");
