@@ -7,9 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="tycoon-style.css" />
   <!-- Web3Modal and WalletConnect CDN -->
-<script src="https://unpkg.com/web3modal@1.9.8/dist/index.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.min.js"></script>
-<script src="https://unpkg.com/@walletconnect/web3-provider@1.8.0/dist/umd/index.min.js"></script>
 </head>
 <body>
     <audio id="bgMusic" autoplay loop>
@@ -68,7 +66,7 @@
     <button onclick="buyUpgrade()" class="upgrade-btn">🛠 Buy Upgrade (10 KON)</button>
    <button onclick="claimKonToWallet()" class="advanced-btn">🚀 Claim to Wallet</button>
     <br>
-    <button onclick="connectWallet()" class="connect-btn">🔗 Connect Wallet</button>
+   <button id="connectButton" class="connect-btn" onclick="connectWallet()">🔗 Connect Wallet</button>
     <p id="walletDisplay" style="font-size: 0.9em; color: #ccc;"></p>
     <hr>
     <p><strong>Subscription System</strong></p>
@@ -79,7 +77,7 @@
   </div>
 
  <script>
-  let userAccount = null;
+ let userAccount = null; // Declare at the top-level, globally
    // ⬇️ Paste the full JavaScript code here (starting from `let konCount = ...`)
   // Example:
   let konCount = parseFloat(localStorage.getItem('konCount')) || 0;
@@ -87,48 +85,9 @@
   let lastMineDay = localStorage.getItem('lastMineDay') || new Date().toDateString();
   let countdownInterval = null;
   
-  let provider, web3Modal, signer, konContract;
-
-  async function initWalletModal() {
-    web3Modal = new window.Web3Modal.default({
-      cacheProvider: false,
-      providerOptions: {
-        walletconnect: {
-          package: window.WalletConnectProvider.default,
-          options: {
-            rpc: {
-              rpc: {
-                     11155111: "https://eth-sepolia.g.alchemy.com/v2/YHDt7GQKHiM6wcMUcCujYpZZXzaHZgUV"
-}
-            },
-          },
-        },
-      },
-    });
-  }
-
-  async function connectWallet() {
-    try {
-      const instance = await web3Modal.connect();
-      provider = new ethers.providers.Web3Provider(instance);
-      signer = provider.getSigner();
-      userAccount = await signer.getAddress();
-
-      document.querySelector('.connect-btn').textContent = `🔌 ${userAccount.slice(0, 6)}...${userAccount.slice(-4)}`;
-      alert("✅ Wallet connected!");
-    } catch (error) {
-      console.error("Connection error:", error);
-      alert("❌ Wallet connection failed.");
-    }
-  }
-
-  window.addEventListener('load', () => {
-    initWalletModal();
-  });
-
-async function claimKonToWallet() {
+ async function claimKonToWallet() {
   console.log("Claim to Wallet button clicked");
-  if (!userAccount) {
+ if (!window.userAccount) {
     alert("⚠️ Please connect your wallet first.");
     return;
   }
@@ -150,7 +109,7 @@ async function claimKonToWallet() {
   const amount = ethers.utils.parseUnits(konCount.toString(), 18);
 
   try {
-    const tx = await kon.transfer(userAccount, amount);
+    const tx = await kon.transfer(window.userAccount, amount);
     await tx.wait();
     alert(`🎉 Claimed ${konCount} KON!`);
     localStorage.setItem("konCount", "0");
@@ -327,7 +286,58 @@ let totalKonPool = parseFloat(localStorage.getItem("totalKonPool")) || 100000000
 document.getElementById("rewardPoolDisplay").textContent = totalKonPool.toFixed(2);
 startCountdownAfterMine();
 </script>
-  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.min.js"></script>
+
+   <script type="module">
+import { EthereumClient, w3mConnectors, w3mProvider } from "https://unpkg.com/@web3modal/ethereum@3";
+import { Web3Modal } from "https://unpkg.com/@web3modal/html@3";
+import { configureChains, createConfig } from "https://unpkg.com/@wagmi/core@1";
+
+const chains = [
+  {
+    id: 11155111,
+    name: "Sepolia",
+    rpcUrls: {
+      default: {
+        http: ["https://eth-sepolia.g.alchemy.com/v2/YHDt7GQKHiM6wcMUcCujYpZZXzaHZgUV"]
+      }
+    }
+  }
+];
+
+const projectId = "koniatycoon123";
+
+const { publicClient } = configureChains(chains, [w3mProvider({ projectId })]);
+
+const wagmiConfig = createConfig({
+  autoConnect: true,
+  connectors: w3mConnectors({ projectId, version: "1", chains }),
+  publicClient
+});
+
+const ethereumClient = new EthereumClient(wagmiConfig, chains);
+
+const modal = new Web3Modal({
+  projectId,
+  themeMode: "light",
+  themeVariables: {
+    "--w3m-accent": "#f39c12"
+  },
+  walletConnectVersion: 2
+}, ethereumClient);
+
+window.connectWallet = async () => {
+  try {
+    const provider = await modal.openModal();
+    const accounts = await provider.request({ method: 'eth_requestAccounts' });
+    window.userAccount = accounts[0]; // ✅ stores globally
+
+    console.log("Connected:", userAccount);
+    document.querySelector('.connect-btn').textContent = `🔌 ${window.userAccount.slice(0, 6)}...${window.userAccount.slice(-4)}`;
+  } catch (err) {
+    console.error("Connection error:", err);
+  }
+};
+</script>
 </body>
 </html>
 <footer class="section">
