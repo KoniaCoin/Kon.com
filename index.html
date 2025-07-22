@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Konia Token | KON</title>
-
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <!-- ✅ Preload font to speed up rendering -->
   <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
-
   <!-- ✅ Defer heavy scripts so page can render first -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2" defer></script>
@@ -48,7 +48,7 @@
     0x18dCDE37dfe6d37E3f517bDba3d14aE51d0E7689
   </p>
   <a class="btn social-icon" href="https://etherscan.io/token/0x18dCDE37dfe6d37E3f517bDba3d14aE51d0E7689" target="_blank">🔎 View on Etherscan</a>
-<button onclick="addToMetaMask()" class="btn">
+<button id="metamaskBtn" class="btn metamask-btn desktop-only" onclick="addToMetaMask()">
   🦊 Add KON to MetaMask
 </button>
 </section>
