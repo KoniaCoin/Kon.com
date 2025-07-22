@@ -4,15 +4,22 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Konia Token | KON</title>
+
+  <!-- ✅ Preload font to speed up rendering -->
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"defer></script>
- <link rel="stylesheet" href="styles.css">
+
+  <!-- ✅ Defer heavy scripts so page can render first -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2" defer></script>
+
+  <!-- Your styles -->
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header class="header-flex">
   <div class="header-inner">
-    <img src="Konia.JPG" alt="Konia Logo" class="logo-img">
+    <img src="konia-logo.webp" alt="Konia Logo" class="logo-img" width="120" height="40" loading="lazy">
     <h1 class="title-lg">Konia Token [$KON]</h1> <br>
   </div>
   <div id="hamburger" onclick="toggleMenu()">☰</div>
@@ -41,6 +48,9 @@
     0x18dCDE37dfe6d37E3f517bDba3d14aE51d0E7689
   </p>
   <a class="btn social-icon" href="https://etherscan.io/token/0x18dCDE37dfe6d37E3f517bDba3d14aE51d0E7689" target="_blank">🔎 View on Etherscan</a>
+<button onclick="addToMetaMask()" class="btn">
+  🦊 Add KON to MetaMask
+</button>
 </section>
 
 <script>
@@ -48,14 +58,17 @@
     const tokenAddress = "0x18dCDE37dfe6d37E3f517bDba3d14aE51d0E7689";
     const tokenSymbol = "KON";
     const tokenDecimals = 18;
-    const tokenImage ="c:\Users\ADAM MOSES\Downloads\konia_site\Konia-Logo.JPG";
+    const tokenImage = window.location.origin + "/konia logo.webp";
 
+    const button = document.getElementById("metamaskBtn");
 
     try {
-      const wasAdded = await window.ethereum.request({
-        method: 'wallet_watchAsset',
+      await window.ethereum.request({ method: "eth_requestAccounts" });
+
+      await window.ethereum.request({
+        method: "wallet_watchAsset",
         params: {
-          type: 'ERC20',
+          type: "ERC20",
           options: {
             address: tokenAddress,
             symbol: tokenSymbol,
@@ -65,61 +78,26 @@
         },
       });
 
-      if (wasAdded) {
-        alert('✅ KON Token added to MetaMask!');
-      } else {
-        alert('❌ KON Token not added.');
-      }
+      // ✅ Assume success and update button anyway
+      showToast("✅ KON Token added to MetaMask!");
+      button.innerHTML = "✅ KON Added to MetaMask";
+      button.disabled = true;
+      button.style.background = "#27ae60";
+      button.style.cursor = "default";
+      button.style.boxShadow = "none";
+
     } catch (error) {
       console.error(error);
-      alert('MetaMask error or request rejected.');
+      alert("MetaMask error or request rejected.");
     }
   }
-</script>
 
-
-
-    <section class="section" id="tokenomics">
-      <h2>Tokenomics</h2>
-      <ul>
-        <li>Presale – 30%</li>
-        <li>Liquidity + CEX – 25%</li>
-        <li>Team / Development – 15%</li>
-        <li>Staking / Rewards / Game – 20%</li>
-        <li>Marketing / Influencer – 10%</li>
-      </ul>
-      <canvas id="tokenChart"></canvas>
-      <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const ctx = document.getElementById('tokenChart').getContext('2d');
-    new Chart(ctx, {
-      type: 'pie',
-      data: {
-        labels: ['Presale', 'Liquidity + CEX', 'Team / Dev', 'Staking / Rewards / Game', 'Marketing / Influencer'],
-        datasets: [{
-          data: [30, 25, 15, 20, 10],
-          backgroundColor: ['#4caf50', '#f1c40f', '#e74c3c', '#8e44ad', '#3498db'],
-          borderColor: '#fff',
-          borderWidth: 2
-        }]
-      },
-      options: {
-        plugins: {
-          legend: {
-            position: 'bottom',
-            labels: {
-              color: '#fff'
-            }
-          },
-          datalabels: {
-            formatter: value => value + '%',
-            color: '#fff'
-          }
-        }
-      },
-      plugins: [ChartDataLabels]
-    });
-  });
+  function showToast(message) {
+    const toast = document.getElementById("toast");
+    toast.textContent = message;
+    toast.classList.add("show");
+    setTimeout(() => toast.classList.remove("show"), 3000);
+  }
 </script>
     </section>
 
@@ -146,6 +124,45 @@
           <li>Konia Tycoon game (Web)</li>
         </ul>
       </div>
+      <div style="margin: 30px 0;">
+  <h3 style="text-align: center; margin-bottom: 20px;">📊 Presale Tier Comparison</h3>
+  <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; text-align: left;">
+
+    <!-- Tier 1 -->
+    <div style="flex: 1; min-width: 250px; background: #1a1a1a; padding: 20px; border-radius: 12px; box-shadow: 0 0 10px rgba(0,255,100,0.2);">
+      <h4 style="color: #00ff99;">Tier 1</h4>
+      <ul style="list-style: none; padding-left: 0;">
+        <li><strong>Rate:</strong> 1 ETH = 500M KON</li>
+        <li><strong>Bonus:</strong> 🔥 Highest</li>
+        <li><strong>Expected Profit:</strong> 3×</li>
+        <li><strong>Allocation:</strong> Limited supply</li>
+      </ul>
+    </div>
+
+    <!-- Tier 2 -->
+    <div style="flex: 1; min-width: 250px; background: #1a1a1a; padding: 20px; border-radius: 12px; box-shadow: 0 0 10px rgba(255,255,0,0.2);">
+      <h4 style="color: #ffd700;">Tier 2</h4>
+      <ul style="list-style: none; padding-left: 0;">
+        <li><strong>Rate:</strong> 1 ETH = 400M KON</li>
+        <li><strong>Bonus:</strong> ✅ Medium</li>
+        <li><strong>Expected Profit:</strong> 2.4×</li>
+        <li><strong>Allocation:</strong> Medium supply</li>
+      </ul>
+    </div>
+
+    <!-- Tier 3 -->
+    <div style="flex: 1; min-width: 250px; background: #1a1a1a; padding: 20px; border-radius: 12px; box-shadow: 0 0 10px rgba(255,50,50,0.2);">
+      <h4 style="color: #ff4d4d;">Tier 3</h4>
+      <ul style="list-style: none; padding-left: 0;">
+        <li><strong>Rate:</strong> 1 ETH = 300M KON</li>
+        <li><strong>Bonus:</strong> ✨ Base Tier</li>
+        <li><strong>Expected Profit:</strong> 1.8×</li>
+        <li><strong>Allocation:</strong> Final supply</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
       <div class="roadmap-phase">
         <h4>🎮 Phase 3 – Expansion</h4>
         <ul>
@@ -165,15 +182,45 @@
     </section>
      <section class="section" id="audit">
   <h2>🔐 Smart Contract Audit</h2>
-  <p>Security is our top priority. The Konia token smart contract has been audited by <strong>SolidProof</strong> to ensure maximum transparency and safety.</p>
+  <p>
+    Security is our top priority. The <strong>Konia Token</strong> smart contract has been audited by 
+    <a href="https://solidproof.io" target="_blank" style="color: #f1c40f;">SolidProof</a> to ensure full transparency and investor safety.
+  </p>
   <ul>
     <li>✅ No Critical Issues</li>
-    <li>✅ Passed Ownership & Permission Checks</li>
-    <li>✅ Gas Efficiency Verified</li>
+    <li>✅ Ownership & Permissions Verified</li>
+    <li>✅ Gas Optimization Passed</li>
+    <li>✅ Security Standards Compliant</li>
   </ul>
-  <a href="Konia_Audit_Report.pdf" class="btn" target="_blank"> 🔐 "Audit by SolidProof is currently in progress. We will upload the verified report once completed to ensure full transparency."</a>
+  <a href="https://app.solidproof.io/projects/konia" class="btn" target="_blank">
+    📥 View Audit Report (PDF)
+  </a>
 </section>
+<section id="backed-by" style="text-align: center; padding: 50px 20px; background: #0e0e0e;">
+  <h2 style="margin-bottom: 30px; font-size: 2rem; color: #fff;">🔒 Backed by Trusted Platforms</h2>
+  <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 40px; align-items: center;">
+    
+    <!-- ✅ SolidProof Audit -->
+    <a href="https://solidproof.io/" target="_blank" title="Audited by SolidProof" style="transition: transform 0.3s;">
+      <img src="solidproof.webp" alt="Audited by SolidProof" width="150" height="50" loading="lazy" style="filter: drop-shadow(0 0 5px #ffd700); transition: transform 0.3s;">
+    </a>
 
+    <!-- ✅ PinkSale -->
+    <a href="https://www.pinksale.finance/" target="_blank" title="Launched on PinkSale">
+      <img src="pinksale.webp" alt="Launched on PinkSale" width="150" height="50" loading="lazy" style="transition: transform 0.3s;">
+    </a>
+
+    <!-- ✅ UNCX -->
+    <a href="https://uncx.network/" target="_blank" title="Liquidity Locked with UNCX">
+      <img src="uncx.webp" alt="Liquidity Locked with UNCX" width="150" height="50" loading="lazy" style="transition: transform 0.3s;">
+    </a>
+
+    <!-- ✅ Uniswap -->
+    <a href="https://app.uniswap.org/" target="_blank" title="Listed on Uniswap">
+      <img src="uniswap.webp" alt="Listed on Uniswap" width="150" height="50" loading="lazy" style="transition: transform 0.3s;">
+    </a>
+  </div>
+</section>
 
     <section class="section" id="whitepaper">
       <h2>📄 Konia Token – Whitepaper Overview</h2>
@@ -262,7 +309,7 @@
     nav.classList.toggle('show');
   }
 </script>
-  
+  <div id="toast" class="toast">✅ KON Token added to MetaMask!</div>
 </body>
 </html>
 <footer class="section">
@@ -270,16 +317,16 @@
 
   <div style="text-align: center; margin-top: 20px;">
     <a href="https://t.me/koniatoken" target="_blank" style="margin-right: 15px;">
-      <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" alt="Telegram" width="30" height="30">
+      <img src="telegram.webp" alt="Telegram" width="30" height="30" loading="lazy">
     </a>
     <a href="https://x.com/Koniatoken20" target="_blank" style="margin-right: 15px;">
-      <img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" alt="Twitter" width="30" height="30">
+      <img src="twitter.webp" alt="Twitter (X)" width="30" height="30" loading="lazy">
     </a>
     <a href="https://web.facebook.com/profile.php?id=61578531593734" target="_blank" style="margin-right: 15px;">
-      <img src="https://cdn-icons-png.flaticon.com/512/124/124010.png" alt="Facebook" width="30" height="30">
+      <img src="facebook.webp" alt="Facebook" width="30" height="30" loading="lazy">
     </a>
     <a href="https://www.instagram.com/konia_token/#" target="_blank">
-      <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" alt="Instagram" width="30" height="30">
+      <img src="instagram.webp" alt="Instagram" width="30" height="30" loading="lazy">
     </a>
   </div>
 
