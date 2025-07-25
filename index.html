@@ -101,6 +101,51 @@
 </script>
     </section>
 
+<section class="section" id="tokenomics">
+      <h2>Tokenomics</h2>
+      <ul>
+        <li>Presale – 30%</li>
+        <li>Liquidity + CEX – 25%</li>
+        <li>Team / Development – 15%</li>
+        <li>Staking / Rewards / Game – 20%</li>
+        <li>Marketing / Influencer – 10%</li>
+      </ul>
+      <canvas id="tokenChart"></canvas>
+      <script>
+  window.addEventListener("load", () => {
+    const ctx = document.getElementById('tokenChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: ['Presale', 'Liquidity + CEX', 'Team / Dev', 'Staking / Rewards / Game', 'Marketing / Influencer'],
+        datasets: [{
+          data: [30, 25, 15, 20, 10],
+          backgroundColor: ['#4caf50', '#f1c40f', '#e74c3c', '#8e44ad', '#3498db'],
+          borderColor: '#fff',
+          borderWidth: 2
+        }]
+      },
+      options: {
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              color: '#fff'
+            }
+          },
+          datalabels: {
+            formatter: value => value + '%',
+            color: '#fff'
+          }
+        }
+      },
+      plugins: [ChartDataLabels]
+    });
+  });
+
+      </script>
+    </section>
+
     <section class="section" id="presale">
       <h2>Presale</h2>
       <p>Join our presale now to get KON tokens before public listing at the best rate!</p>
