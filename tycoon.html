@@ -6,6 +6,8 @@
   <title>Konia Tycoon</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="tycoon-style.css" />
+  <!-- Web3Modal V3 Core and Ethers -->
+<script src="https://unpkg.com/@web3modal/ethers5@2.6.2/dist/index.umd.js"></script>
   <!-- Web3Modal and WalletConnect CDN -->
 <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.min.js"></script>
 </head>
@@ -286,57 +288,37 @@ let totalKonPool = parseFloat(localStorage.getItem("totalKonPool")) || 100000000
 document.getElementById("rewardPoolDisplay").textContent = totalKonPool.toFixed(2);
 startCountdownAfterMine();
 </script>
+ <script src="https://unpkg.com/@web3modal/ethers5@2.6.2/dist/index.umd.js"></script>
+<script>
+  const projectId = '34b6efad3a416d6d50339ea8805b0512';
 
-   <script type="module">
-import { EthereumClient, w3mConnectors, w3mProvider } from "https://unpkg.com/@web3modal/ethereum@3";
-import { Web3Modal } from "https://unpkg.com/@web3modal/html@3";
-import { configureChains, createConfig } from "https://unpkg.com/@wagmi/core@1";
+  const metadata = {
+    name: 'Konia Team',
+    description: 'Official wallet connection for Konia Team',
+    url: 'https://koniatoken.com',
+    icons: ['https://koniatoken.com/konia.png']
+  };
 
-const chains = [
-  {
-    id: 11155111,
-    name: "Sepolia",
-    rpcUrls: {
-      default: {
-        http: ["https://eth-sepolia.g.alchemy.com/v2/YHDt7GQKHiM6wcMUcCujYpZZXzaHZgUV"]
-      }
+  const modal = new window.Web3Modal.default({
+    projectId,
+    themeMode: 'dark',
+    metadata
+  });
+
+  async function connectWallet() {
+    try {
+      const instance = await modal.connect();
+      const provider = new ethers.providers.Web3Provider(instance);
+      const signer = provider.getSigner();
+      const address = await signer.getAddress();
+      window.userAccount = address;
+      document.getElementById("walletDisplay").textContent = `Wallet: ${address.slice(0, 6)}...${address.slice(-4)}`;
+      console.log("✅ Connected:", address);
+    } catch (err) {
+      console.error("❌ Connection failed", err);
+      alert("❌ Failed to connect wallet.");
     }
   }
-];
-
-const projectId = "koniatycoon123";
-
-const { publicClient } = configureChains(chains, [w3mProvider({ projectId })]);
-
-const wagmiConfig = createConfig({
-  autoConnect: true,
-  connectors: w3mConnectors({ projectId, version: "1", chains }),
-  publicClient
-});
-
-const ethereumClient = new EthereumClient(wagmiConfig, chains);
-
-const modal = new Web3Modal({
-  projectId,
-  themeMode: "light",
-  themeVariables: {
-    "--w3m-accent": "#f39c12"
-  },
-  walletConnectVersion: 2
-}, ethereumClient);
-
-window.connectWallet = async () => {
-  try {
-    const provider = await modal.openModal();
-    const accounts = await provider.request({ method: 'eth_requestAccounts' });
-    window.userAccount = accounts[0]; // ✅ stores globally
-
-    console.log("Connected:", userAccount);
-    document.querySelector('.connect-btn').textContent = `🔌 ${window.userAccount.slice(0, 6)}...${window.userAccount.slice(-4)}`;
-  } catch (err) {
-    console.error("Connection error:", err);
-  }
-};
 </script>
 </body>
 </html>
